@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <pthread.h>
 
 pthread_mutex_t lock_A = PTHREAD_MUTEX_INITIALIZER;
@@ -23,6 +25,9 @@ void *thread_A(void *arg) {
     printf("Thread A locked A\n");
     pthread_mutex_lock(&lock_B);
     printf("Thread A locked B\n");
+
+    usleep(rand() % 500000);
+
     pthread_mutex_unlock(&lock_B);
     pthread_mutex_unlock(&lock_A);
     return NULL;
@@ -33,6 +38,9 @@ void *thread_B(void *arg) {
     printf("Thread B locked B\n");
     pthread_mutex_lock(&lock_A);
     printf("Thread B locked A\n");
+
+    usleep(rand() % 500000);
+
     pthread_mutex_unlock(&lock_A);
     pthread_mutex_unlock(&lock_B);
     return NULL;

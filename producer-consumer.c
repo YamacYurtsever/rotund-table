@@ -2,12 +2,12 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define N 3
+#define BUFFER_SIZE 3
 #define ROUNDS 10
 #define EMPTY -1
 #define FULL 1
 
-int buffer[N];
+int buffer[BUFFER_SIZE];
 int in = 0;
 int out = 0;
 
@@ -20,10 +20,10 @@ void *consumer(void *arg);
 
 int main(void) {
     sem_init(&mutex, 0, 1);
-    sem_init(&empty, 0, 1);
-    sem_init(&full, 0, 1);
+    sem_init(&empty, 0, BUFFER_SIZE);
+    sem_init(&full, 0, 0);
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < BUFFER_SIZE; i++) {
         buffer[i] = EMPTY;
     }
 
@@ -45,7 +45,7 @@ void *producer(void *arg) {
         sem_wait(&mutex);
 
         buffer[in] = i;
-        in = (in + 1) % N;
+        in = (in + 1) % BUFFER_SIZE;
         printf("Produced %d\n", i);
 
         sem_post(&mutex);
@@ -61,7 +61,7 @@ void *consumer(void *arg) {
 
         int item = buffer[out];
         buffer[out] = EMPTY;
-        out = (out + 1) % N;
+        out = (out + 1) % BUFFER_SIZE;
         printf("Consumed %d\n", item);
 
         sem_post(&mutex);

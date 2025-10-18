@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <pthread.h>
-#include <stdatomic.h>
 
 #define N_THREADS 100
 #define AMOUNT 10000

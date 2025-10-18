@@ -1,8 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <pthread.h>
 #include <semaphore.h>
 
-#define N_READERS_WRITERS 2
+#define N_READERS 5
+#define N_WRITERS 2
 #define ROUNDS 5
 
 int buffer = -1;
@@ -15,16 +18,22 @@ void *reader(void *arg);
 void *writer(void *arg);
 
 int main(void) {
-    pthread_t readers[N_READERS_WRITERS];
-    pthread_t writers[N_READERS_WRITERS];
+    pthread_t readers[N_READERS];
+    pthread_t writers[N_WRITERS];
 
-    for (int i = 0; i < N_READERS_WRITERS; i++) {
+    for (int i = 0; i < N_READERS; i++) {
         pthread_create(&readers[i], NULL, reader, (void *)(long)i);
+    }
+
+    for (int i = 0; i < N_WRITERS; i++) {
         pthread_create(&writers[i], NULL, writer, (void *)(long)i);
     }
 
-    for (int i = 0; i < N_READERS_WRITERS; i++) {
+    for (int i = 0; i < N_READERS; i++) {
         pthread_join(readers[i], NULL);
+    }
+
+    for (int i = 0; i < N_WRITERS; i++) {
         pthread_join(writers[i], NULL);
     }
 
@@ -47,6 +56,8 @@ void *reader(void *arg) {
         if (read_count == 0)
             pthread_mutex_unlock(&rw_mutex);
         pthread_mutex_unlock(&mutex);
+
+        usleep(rand() % 500000);
     }
     return NULL;
 }
@@ -60,6 +71,8 @@ void *writer(void *arg) {
         printf("Writer %d writes buffer: %d\n", id, buffer);
 
         pthread_mutex_unlock(&rw_mutex);
+
+        usleep(rand() % 500000);
     }
     return NULL;
 }
