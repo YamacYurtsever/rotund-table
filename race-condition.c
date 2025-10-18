@@ -24,6 +24,8 @@ int main(void) {
 }
 
 void *thread(void *arg) {
-    for (int i = 0; i < AMOUNT; i++) count++;
+    for (int i = 0; i < AMOUNT; i++) {
+        count++;
+    }
     return NULL;
 }
