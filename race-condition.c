@@ -2,7 +2,7 @@
 #include <pthread.h>
 #include <stdatomic.h>
 
-#define N_THREADS 10
+#define N_THREADS 100
 #define AMOUNT 10000
 
 int count = 0;
@@ -20,7 +20,7 @@ int main(void) {
         pthread_join(threads[i], NULL);
     }
 
-    printf("%d", count);
+    printf("%d\n", count);
     return 0;
 }
 
