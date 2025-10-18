@@ -41,31 +41,31 @@ int main(void) {
 
 void *producer(void *arg) {
     for (int i = 0; i < ROUNDS; i++) {
-        sem_wait(empty);
-        sem_wait(mutex);
+        sem_wait(&empty);
+        sem_wait(&mutex);
 
         buffer[in] = i;
         in = (in + 1) % N;
         printf("Produced %d\n", i);
 
-        sem_post(mutex);
-        sem_post(full);
+        sem_post(&mutex);
+        sem_post(&full);
     }
     return NULL;
 }
 
 void *consumer(void *arg) {
     for (int i = 0; i < ROUNDS; i++) {
-        sem_wait(full);
-        sem_wait(mutex);
+        sem_wait(&full);
+        sem_wait(&mutex);
 
         int item = buffer[out];
         buffer[out] = EMPTY;
         out = (out + 1) % N;
         printf("Consumed %d\n", item);
 
-        sem_post(mutex);
-        sem_post(empty);
+        sem_post(&mutex);
+        sem_post(&empty);
     }
     return NULL;
 }
